@@ -1,5 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
+// import { createStructuredSelector } from 'reselect';
+
 import './App.css';
+
 import QuestionContainer from './components/QuestionCard/questionCard'
 
 function App() {
@@ -10,4 +14,4 @@ function App() {
   );
 }
 
-export default App;
+export default connect()(App);
