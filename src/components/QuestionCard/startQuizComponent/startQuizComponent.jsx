@@ -6,35 +6,17 @@ import { startQuiz } from '../../../redux/quiz/quiz.actions';
 
 import './startQuizContainer.css';
 
-class StartQuizComponent extends React.Component {
-    constructor(){
-        super();
-
-        this.state = {
-            displayName: '',
-            email: '',
-            password: '',
-            confirmPassword: ''
-        }
-    }
-    
+function StartQuizComponent ({startQuiz}) {
 
     /* Randomize array in-place using Durstenfeld shuffle algorithm */
-    shuffleArray(array) {
+    function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
     }
 
-    handleChange = event => {
-        const { name, value } = event.target;
-
-        this.setState({[name]: value});
-    }
-
-render() {
-    const handleStartQuiz = () => {
+    function handleStartQuiz() {
         let category   = document.querySelector('#categories').value;
         let amount     = document.querySelector('#numOfQuestions').value;
         let difficulty = document.querySelector('#difficulty').value;
@@ -44,7 +26,7 @@ render() {
         url += (category !== "0") ? `&category=${category}` : "";
         url += (difficulty !== "0") ? `&difficulty=${difficulty}` : "";
         url += `&type=multiple`;
-        console.log(url);
+
         fetch(url)
         .then(response => response.json())
         .then(data => {
@@ -55,7 +37,7 @@ render() {
 
                 question.choices = result.incorrect_answers;
                 question.choices.push(result.correct_answer);
-                this.shuffleArray(question.choices);
+                shuffleArray(question.choices);
 
                 question.answer = question.choices.indexOf(result.correct_answer)
                 questions.push(question);
@@ -64,7 +46,6 @@ render() {
         });
     }
 
-    const {startQuiz} = this.props;
     return (
       <div className="start-holder">
           
@@ -124,7 +105,6 @@ render() {
           </button>
       </div>
     );
-}
 }
 
 const mapDispatchToProps = dispatch => ({

@@ -18,6 +18,8 @@ const quizReducer = (state = INITIAL_STATE, action) => {
                 playerAnswers: action.payload.playerAnswers,
                 quizStatus: 'finished'
             };
+        case QuizActionTypes.NEW_QUIZ:
+            return INITIAL_STATE;
         default:
             return state;
     }

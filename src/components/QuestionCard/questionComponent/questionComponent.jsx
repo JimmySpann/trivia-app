@@ -54,7 +54,6 @@ function QuestionComponent ({questions, finishQuiz}) {
         if(questionsCompleted+1 === total) { //Finishes Quiz
             finishQuiz({playerAnswers});
             document.querySelector(".question-holder").classList.add("hide");
-            // numOfTrueAns = playerAnswers.reduce((n, x) => n + (x === true), 0);
         } else {
             setQuestion(questions[questionsCompleted+1])
             setQuestionsCompleted(questionsCompleted+1)

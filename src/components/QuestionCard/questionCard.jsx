@@ -5,24 +5,21 @@ import { createStructuredSelector } from 'reselect';
 // import { startQuiz } from '../../../redux/quiz/quiz.actions';
 import { selectQuizData } from '../../redux/quiz/quiz.selectors'
 
-import QuestionComponent from './questionComponent/questionComponent'
 import StartQuizComponent from './startQuizComponent/startQuizComponent'
+import QuestionComponent from './questionComponent/questionComponent'
+import ResultsComponent from './resultsComponent/resultsComponent'
 
 import './questionCard.css';
 
 function QuestionContainer({quizData}) {
-    const {quizStatus, questions} = quizData;
+    const {quizStatus, questions, playerAnswers} = quizData;
 
     return (
-
         <div>
-        
             {!quizStatus && <StartQuizComponent /> }
-
             {quizStatus === "started" && <QuestionComponent questions={questions} /> }
-
+            {quizStatus === "finished" && <ResultsComponent questions={questions} playerAnswers={playerAnswers} /> }
         </div>              
-
     );
 }
 
