@@ -1,7 +1,7 @@
 import QuizActionTypes from './quiz.types'
 
 const INITIAL_STATE = {
-    quizStarted: false
+
 };
 
 const quizReducer = (state = INITIAL_STATE, action) => {
@@ -10,7 +10,13 @@ const quizReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 questions: action.payload,
-                isQuizStarted: true
+                quizStatus: 'started'
+            };
+        case QuizActionTypes.FINISH_QUIZ:
+            return {
+                ...state,
+                playerAnswers: action.payload.playerAnswers,
+                quizStatus: 'finished'
             };
         default:
             return state;

@@ -10,21 +10,16 @@ import StartQuizComponent from './startQuizComponent/startQuizComponent'
 
 import './questionCard.css';
 
-function QuestionContainer(quizData) {
-    const {questions} = quizData
-    console.log(quizData.quizData.questions)
-    const quizStarted = false;
-    // if (this.state.isConnecting) return null;
-
-    // const playerAnswers = this.state.playerAnswers;
+function QuestionContainer({quizData}) {
+    const {quizStatus, questions} = quizData;
 
     return (
 
         <div>
         
-            {quizStarted !== true && <StartQuizComponent /> }
+            {!quizStatus && <StartQuizComponent /> }
 
-            {quizStarted === true && <QuestionComponent questions={this.state.questions} /> }
+            {quizStatus === "started" && <QuestionComponent questions={questions} /> }
 
         </div>              
 

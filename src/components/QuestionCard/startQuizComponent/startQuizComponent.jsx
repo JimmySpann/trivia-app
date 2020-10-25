@@ -1,24 +1,51 @@
 import React from 'react';
 
 import {connect} from 'react-redux';
-// import { createStructuredSelector } from 'reselect';
 
 import { startQuiz } from '../../../redux/quiz/quiz.actions';
 
 import './startQuizContainer.css';
 
-function StartQuizComponent ({startQuiz}) {  
+class StartQuizComponent extends React.Component {
+    constructor(){
+        super();
+
+        this.state = {
+            displayName: '',
+            email: '',
+            password: '',
+            confirmPassword: ''
+        }
+    }
+    
 
     /* Randomize array in-place using Durstenfeld shuffle algorithm */
-    function shuffleArray(array) {
+    shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
     }
 
-    function handleStartQuiz() {
-        fetch('https://opentdb.com/api.php?amount=10&category=20&type=multiple')
+    handleChange = event => {
+        const { name, value } = event.target;
+
+        this.setState({[name]: value});
+    }
+
+render() {
+    const handleStartQuiz = () => {
+        let category   = document.querySelector('#categories').value;
+        let amount     = document.querySelector('#numOfQuestions').value;
+        let difficulty = document.querySelector('#difficulty').value;
+
+        let url = `https://opentdb.com/api.php?`;
+        url += `amount=${amount}`;
+        url += (category !== "0") ? `&category=${category}` : "";
+        url += (difficulty !== "0") ? `&difficulty=${difficulty}` : "";
+        url += `&type=multiple`;
+        console.log(url);
+        fetch(url)
         .then(response => response.json())
         .then(data => {
             const questions = []
@@ -28,7 +55,7 @@ function StartQuizComponent ({startQuiz}) {
 
                 question.choices = result.incorrect_answers;
                 question.choices.push(result.correct_answer);
-                shuffleArray(question.choices);
+                this.shuffleArray(question.choices);
 
                 question.answer = question.choices.indexOf(result.correct_answer)
                 questions.push(question);
@@ -37,6 +64,7 @@ function StartQuizComponent ({startQuiz}) {
         });
     }
 
+    const {startQuiz} = this.props;
     return (
       <div className="start-holder">
           
@@ -46,6 +74,7 @@ function StartQuizComponent ({startQuiz}) {
           <div>
             <label>categories</label>
             <select id="categories">
+                <option value="0">Any</option>
                 <option value="9">General Knowledge</option>
                 <option value="10">Entertainment: Books</option>
                 <option value="11">Entertainment: Film</option>
@@ -76,17 +105,17 @@ function StartQuizComponent ({startQuiz}) {
           
           <div>
             <label>number of questions</label>
-            <input type="number" min="1" max="100" defaultValue="10"/>
+            <input id="numOfQuestions" type="number" min="1" max="100" defaultValue="10"/>
         </div>
 
 
           <div>
             <label>difficulty</label>
             <select id="difficulty">
-                <option value="1">Any</option>
-                <option value="2">Easy</option>
-                <option value="3">Medium</option>
-                <option value="4">Hard</option>
+                <option value="0">Any</option>
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
             </select>
         </div>
 
@@ -96,14 +125,11 @@ function StartQuizComponent ({startQuiz}) {
       </div>
     );
 }
+}
 
 const mapDispatchToProps = dispatch => ({
     startQuiz: questions => dispatch(startQuiz(questions))
 });
-
-// const mapStateToProps = createStructuredSelector({
-//     itemCount: selectCartItemsCount
-// });
 
 export default connect(
     null,

@@ -1,10 +1,13 @@
 import React from 'react';
 import { useState } from 'react';
 
+import {connect} from 'react-redux';
+
+import { finishQuiz } from '../../../redux/quiz/quiz.actions';
+
 import './questionContainer.css';
 
-function QuestionComponent (props) {
-    const {questions} = props;   
+function QuestionComponent ({questions, finishQuiz}) {  
 
     const [question, setQuestion] = useState(questions[0])
     const [questionsCompleted, setQuestionsCompleted] = useState(0)
@@ -48,7 +51,8 @@ function QuestionComponent (props) {
     }
 
     const handleNextQ = () => {            
-        if(questionsCompleted+1 === total) {
+        if(questionsCompleted+1 === total) { //Finishes Quiz
+            finishQuiz({playerAnswers});
             document.querySelector(".question-holder").classList.add("hide");
             // numOfTrueAns = playerAnswers.reduce((n, x) => n + (x === true), 0);
         } else {
@@ -94,4 +98,11 @@ function QuestionComponent (props) {
   );
 }
 
-export default QuestionComponent;
+const mapDispatchToProps = dispatch => ({
+    finishQuiz: payload => dispatch(finishQuiz(payload))
+});
+
+export default connect(
+    null,
+    mapDispatchToProps
+)(QuestionComponent);
