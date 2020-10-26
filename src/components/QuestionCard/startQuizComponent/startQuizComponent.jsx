@@ -7,16 +7,9 @@ import { startQuiz } from '../../../redux/quiz/quiz.actions';
 
 import './startQuizContainer.css';
 
-function StartQuizComponent ({startQuiz}) {
-    //     const Entities = require('html-entities').XmlEntities;
-    
+function StartQuizComponent ({startQuiz}) {   
     const entities = new AllHtmlEntities();
-    console.log(entities)
- 
-// console.log(entities.encode('<>"\'&©®')); // &lt;&gt;&quot;&apos;&amp;©®
-// console.log(entities.encodeNonUTF('<>"\'&©®')); // &lt;&gt;&quot;&apos;&amp;&#169;&#174;
-// console.log(entities.encodeNonASCII('<>"\'&©®')); // <>"\'&©®
-console.log(entities.decode('&lt;&gt;&quot;&apos;&amp;&copy;&reg;&#8710;'));
+    let isStartPressed = false
 
     /* Randomize array in-place using Durstenfeld shuffle algorithm */
     function shuffleArray(array) {
@@ -27,41 +20,44 @@ console.log(entities.decode('&lt;&gt;&quot;&apos;&amp;&copy;&reg;&#8710;'));
     }
 
     function handleStartQuiz() {
+        if(!isStartPressed){
+            isStartPressed = true;
 
-        //Sets form fields to values
-        let category   = document.querySelector('#categories').value;
-        let amount     = document.querySelector('#numOfQuestions').value;
-        let difficulty = document.querySelector('#difficulty').value;
+            //Sets form fields to values
+            let category   = document.querySelector('#categories').value;
+            let amount     = document.querySelector('#numOfQuestions').value;
+            let difficulty = document.querySelector('#difficulty').value;
 
-        //Constructs url for getting question data
-        let url = `https://opentdb.com/api.php?`;
-        url += `amount=${amount}`;
-        url += (category !== "0") ? `&category=${category}` : "";
-        url += (difficulty !== "0") ? `&difficulty=${difficulty}` : "";
-        url += `&type=multiple`;
+            //Constructs url for getting question data
+            let url = `https://opentdb.com/api.php?`;
+            url += `amount=${amount}`;
+            url += (category !== "0") ? `&category=${category}` : "";
+            url += (difficulty !== "0") ? `&difficulty=${difficulty}` : "";
+            url += `&type=multiple`;
 
-        //Retrieves question data, updates state, then starts QuestionComponent
-        fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            //Restructures data to work in quiz game
-            const questions = []
-            for(let result of data.results) {
-                const question = {choices: []}
-                question.question = entities.decode(result.question);
+            //Retrieves question data, updates state, then starts QuestionComponent
+            fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                //Restructures data to work in quiz game
+                const questions = []
+                for(let result of data.results) {
+                    const question = {choices: []}
+                    question.question = entities.decode(result.question);
 
-                // question.choices = result.incorrect_answers;
-                for(let answer of result.incorrect_answers) {
-                    question.choices.push(entities.decode(answer))
+                    // question.choices = result.incorrect_answers;
+                    for(let answer of result.incorrect_answers) {
+                        question.choices.push(entities.decode(answer))
+                    }
+                    question.choices.push(entities.decode(result.correct_answer));
+                    shuffleArray(question.choices);
+
+                    question.answer = question.choices.indexOf(entities.decode(result.correct_answer))
+                    questions.push(question);
                 }
-                question.choices.push(entities.decode(result.correct_answer));
-                shuffleArray(question.choices);
-
-                question.answer = question.choices.indexOf(entities.decode(result.correct_answer))
-                questions.push(question);
-            }
-            startQuiz(questions);
-        });
+                startQuiz(questions);
+            });
+        }
     }
 
     return (
