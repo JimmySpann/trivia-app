@@ -1,11 +1,22 @@
 import React from 'react';
 import {connect} from 'react-redux';
+import {AllHtmlEntities} from 'html-entities'
+
 
 import { startQuiz } from '../../../redux/quiz/quiz.actions';
 
 import './startQuizContainer.css';
 
 function StartQuizComponent ({startQuiz}) {
+    //     const Entities = require('html-entities').XmlEntities;
+    
+    const entities = new AllHtmlEntities();
+    console.log(entities)
+ 
+// console.log(entities.encode('<>"\'&©®')); // &lt;&gt;&quot;&apos;&amp;©®
+// console.log(entities.encodeNonUTF('<>"\'&©®')); // &lt;&gt;&quot;&apos;&amp;&#169;&#174;
+// console.log(entities.encodeNonASCII('<>"\'&©®')); // <>"\'&©®
+console.log(entities.decode('&lt;&gt;&quot;&apos;&amp;&copy;&reg;&#8710;'));
 
     /* Randomize array in-place using Durstenfeld shuffle algorithm */
     function shuffleArray(array) {
@@ -36,14 +47,17 @@ function StartQuizComponent ({startQuiz}) {
             //Restructures data to work in quiz game
             const questions = []
             for(let result of data.results) {
-                const question = {}
-                question.question = result.question;
+                const question = {choices: []}
+                question.question = entities.decode(result.question);
 
-                question.choices = result.incorrect_answers;
-                question.choices.push(result.correct_answer);
+                // question.choices = result.incorrect_answers;
+                for(let answer of result.incorrect_answers) {
+                    question.choices.push(entities.decode(answer))
+                }
+                question.choices.push(entities.decode(result.correct_answer));
                 shuffleArray(question.choices);
 
-                question.answer = question.choices.indexOf(result.correct_answer)
+                question.answer = question.choices.indexOf(entities.decode(result.correct_answer))
                 questions.push(question);
             }
             startQuiz(questions);
