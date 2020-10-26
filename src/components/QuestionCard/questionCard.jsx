@@ -2,12 +2,11 @@ import React from 'react';
 import {connect} from 'react-redux';
 import { createStructuredSelector } from 'reselect';
 
-// import { startQuiz } from '../../../redux/quiz/quiz.actions';
-import { selectQuizData } from '../../redux/quiz/quiz.selectors'
-
 import StartQuizComponent from './startQuizComponent/startQuizComponent'
 import QuestionComponent from './questionComponent/questionComponent'
 import ResultsComponent from './resultsComponent/resultsComponent'
+
+import { selectQuizData } from '../../redux/quiz/quiz.selectors'
 
 import './questionCard.css';
 
@@ -16,6 +15,7 @@ function QuestionContainer({quizData}) {
 
     return (
         <div>
+            {/* Neat way of conditionally switching components */}
             {!quizStatus && <StartQuizComponent /> }
             {quizStatus === "started" && <QuestionComponent questions={questions} /> }
             {quizStatus === "finished" && <ResultsComponent questions={questions} playerAnswers={playerAnswers} /> }

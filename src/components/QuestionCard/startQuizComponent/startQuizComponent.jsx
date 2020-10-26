@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {connect} from 'react-redux';
 
 import { startQuiz } from '../../../redux/quiz/quiz.actions';
@@ -17,19 +16,24 @@ function StartQuizComponent ({startQuiz}) {
     }
 
     function handleStartQuiz() {
+
+        //Sets form fields to values
         let category   = document.querySelector('#categories').value;
         let amount     = document.querySelector('#numOfQuestions').value;
         let difficulty = document.querySelector('#difficulty').value;
 
+        //Constructs url for getting question data
         let url = `https://opentdb.com/api.php?`;
         url += `amount=${amount}`;
         url += (category !== "0") ? `&category=${category}` : "";
         url += (difficulty !== "0") ? `&difficulty=${difficulty}` : "";
         url += `&type=multiple`;
 
+        //Retrieves question data, updates state, then starts QuestionComponent
         fetch(url)
         .then(response => response.json())
         .then(data => {
+            //Restructures data to work in quiz game
             const questions = []
             for(let result of data.results) {
                 const question = {}
@@ -47,14 +51,13 @@ function StartQuizComponent ({startQuiz}) {
     }
 
     return (
-      <div className="start-holder">
-          
-          <span>Trivia Game!</span>
-          <span>(Clever name right?)</span>
+        <div className="start-holder"> 
+            <span>Trivia Game!</span>
+            <span>(Clever name right?)</span>
 
-          <div>
-            <label>categories</label>
-            <select id="categories">
+            <div>
+                <label>categories</label>
+                <select id="categories">
                 <option value="0">Any</option>
                 <option value="9">General Knowledge</option>
                 <option value="10">Entertainment: Books</option>
@@ -81,29 +84,27 @@ function StartQuizComponent ({startQuiz}) {
                 <option value="31">Entertainment: Japanese Anime and Manga</option>
                 <option value="32">Entertainment: Cartoon And Animations</option>
             </select>
+            </div>
+
+            <div>
+                <label>number of questions</label>
+                <input id="numOfQuestions" type="number" min="1" max="100" defaultValue="10"/>
+            </div>
+
+            <div>
+                <label>difficulty</label>
+                <select id="difficulty">
+                    <option value="0">Any</option>
+                    <option value="easy">Easy</option>
+                    <option value="medium">Medium</option>
+                    <option value="hard">Hard</option>
+                </select>
+            </div>
+
+            <button onClick={handleStartQuiz}>
+                Start Quiz
+            </button>
         </div>
-
-          
-          <div>
-            <label>number of questions</label>
-            <input id="numOfQuestions" type="number" min="1" max="100" defaultValue="10"/>
-        </div>
-
-
-          <div>
-            <label>difficulty</label>
-            <select id="difficulty">
-                <option value="0">Any</option>
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-            </select>
-        </div>
-
-          <button onClick={handleStartQuiz}>
-              Start Quiz
-          </button>
-      </div>
     );
 }
 

@@ -3,19 +3,15 @@ import React from 'react';
 import {connect} from 'react-redux';
 import { newQuiz } from '../../../redux/quiz/quiz.actions';
 
-// import { toggleCartHidden } from '../../redux/cart/cart.actions';
-// import { selectCartItemsCount } from '../../redux/cart/cart.selectors';
-
 import './resultsContainer.css';
 
 function ResultsComponent ({questions, playerAnswers, newQuiz}) {  
 
     const total = questions.length;
+    //Counts total of true answers the player has made
     const numOfTrueAns = playerAnswers.reduce((n, x) => n + (x === true), 0);
-    console.log(newQuiz)
-    function handleNewQuizButton() {
-        newQuiz('?');
-    }
+    //Restarts state, ends ResultComponent, and starts StartComponent
+    function handleNewQuizButton() { newQuiz() }
 
   return (
         
