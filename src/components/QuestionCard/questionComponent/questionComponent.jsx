@@ -23,6 +23,7 @@ function QuestionComponent ({questions, finishQuiz}) {
             document.querySelector("#c-"+i).classList.remove("wrong");
             document.querySelector("#c-"+i).classList.remove("right");
             document.querySelector("#c-"+i).classList.add("neutral");
+            document.querySelector(".answer-container").classList.add("hide");
         }
     }
 
