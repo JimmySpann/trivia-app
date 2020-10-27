@@ -12,6 +12,7 @@ function QuestionComponent ({questions, finishQuiz}) {
     const [question, setQuestion] = useState(questions[0])
     const [questionsCompleted, setQuestionsCompleted] = useState(0)
     const [playerAnswers, setPlayerAnswers] = useState([])
+    const [hasPlayerChose, setHasPlayerChose] = useState(false)
     const total = questions.length;
 
 
@@ -25,32 +26,35 @@ function QuestionComponent ({questions, finishQuiz}) {
         }
     }
 
-    const handleQuestionClick = (choice) => {
-        const ans = question.answer
-        
-        //Decide if answer is right or wrong, then record
-        const isChoiceCorrect = (choice === ans) ? true : false
-        setPlayerAnswers([...playerAnswers, isChoiceCorrect]);
+    function handleChoiceClick(choice) {
+        console.log(hasPlayerChose)
+        if(!hasPlayerChose) {
+            setHasPlayerChose(true);
+            const ans = question.answer
+            
+            //Decide if answer is right or wrong, then record
+            const isChoiceCorrect = (choice === ans) ? true : false
+            setPlayerAnswers([...playerAnswers, isChoiceCorrect]);
 
 
-        //Highlight correct choice in green
-        document.querySelector("#c-"+ans).classList.remove("neutral");
-        document.querySelector("#c-"+ans).classList.add("right");
-        
-        //Highlight choice as red if wrong
-        if(choice !== ans){
-            document.querySelector("#c-"+choice).classList.remove("neutral");
-            document.querySelector("#c-"+choice).classList.add("wrong");
+            //Highlight correct choice in green
+            document.querySelector("#c-"+ans).classList.remove("neutral");
+            document.querySelector("#c-"+ans).classList.add("right");
+            
+            //Highlight choice as red if wrong
+            if(choice !== ans){
+                document.querySelector("#c-"+choice).classList.remove("neutral");
+                document.querySelector("#c-"+choice).classList.add("wrong");
+            }
+
+            //Show answer text and Next Button
+            document.querySelector(".answer-container").classList.remove("hide");
+
+            //Change Next button to Finished button
+            if(questionsCompleted+1 === total) {
+                document.querySelector(".next-button").innerHTML = "Finished";
+            }
         }
-
-        //Show answer text and Next Button
-        document.querySelector(".answer-container").classList.remove("hide");
-
-        //Change Next button to Finished button
-        if(questionsCompleted+1 === total) {
-            document.querySelector(".next-button").innerHTML = "Finished";
-        }
-
     }
 
     const handleNextQ = () => {            
@@ -62,6 +66,7 @@ function QuestionComponent ({questions, finishQuiz}) {
             setQuestion(questions[questionsCompleted+1])
             setQuestionsCompleted(questionsCompleted+1)
             restartChoices();
+            setHasPlayerChose(false);
         }
     }
 
@@ -82,8 +87,8 @@ function QuestionComponent ({questions, finishQuiz}) {
             {question.choices.map((choice, index) => (
                 <div id={"c-"+index} key={index} 
                      className="choice-button neutral" 
-                     onClick={() => handleQuestionClick(index)
-                }>
+                     onClick={() => handleChoiceClick(index)}
+                >
                     {choice} 
                 </div>
             ))} 
