@@ -19,7 +19,7 @@ function QuestionContainer({quizData}) {
             {!quizStatus && <StartQuizComponent /> }
             {quizStatus === "started" && <QuestionComponent questions={questions} /> }
             {quizStatus === "finished" && <ResultsComponent questions={questions} playerAnswers={playerAnswers} /> }
-        </div>              
+        </div>
     );
 }
 
@@ -31,5 +31,3 @@ export default connect(
     mapStateToProps,
     null
 )(QuestionContainer);
-
-

@@ -10,8 +10,3 @@ function newAction(type) {
 export const startQuiz = newAction("START_QUIZ");
 export const finishQuiz = newAction("FINISH_QUIZ");
 export const newQuiz = newAction("NEW_QUIZ");
-
-// export const startQuiz = questions => ({
-//     type: QuizActionTypes.START_QUIZ,
-//     payload: questions
-// });
