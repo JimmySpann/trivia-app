@@ -8,7 +8,14 @@
 
 .question-container {
     text-align: center;
-    margin-top: 70px;
+    margin-top: 0px;
+}
+
+.timesUp {
+    position: absolute;
+    margin-top: 150px;
+    margin-left: -125px;
+    font-size: 60px;
 }
 
 .question {

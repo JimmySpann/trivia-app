@@ -1,9 +1,10 @@
 import React from 'react';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
-import {connect} from 'react-redux';
-
+import { connect } from 'react-redux';
 import { finishQuiz } from '../../../redux/quiz/quiz.actions';
+
+import CountDownComponent from '../count-down/count-down'
 
 import './questionContainer.css';
 
@@ -12,9 +13,22 @@ function QuestionComponent ({questions, finishQuiz}) {
     const [question, setQuestion] = useState(questions[0])
     const [questionsCompleted, setQuestionsCompleted] = useState(0)
     const [playerAnswers, setPlayerAnswers] = useState([])
-    const [hasPlayerChose, setHasPlayerChose] = useState(false)
+    const [pauseTimer, setPauseTimer] = useState(false);
     const total = questions.length;
+    
+    let isChoiceCorrect = useRef();
+    let hasPlayerChose = false;
 
+    let timesUpElm;
+
+    setTimeout(() => {
+        setPauseTimer(true)
+    }, 1000);
+  
+    function handleFinished() {
+        timesUpElm.classList.remove("hide");
+        handleChoiceClick(null)
+    } 
 
     //Clears all choice containers and makes them neutral again
     function restartChoices() {
@@ -28,22 +42,19 @@ function QuestionComponent ({questions, finishQuiz}) {
     }
 
     function handleChoiceClick(choice) {
-        console.log(hasPlayerChose)
         if(!hasPlayerChose) {
-            setHasPlayerChose(true);
-            const ans = question.answer
+            hasPlayerChose = true;
+            setPauseTimer(true)
             
             //Decide if answer is right or wrong, then record
-            const isChoiceCorrect = (choice === ans) ? true : false
-            setPlayerAnswers([...playerAnswers, isChoiceCorrect]);
-
-
+            isChoiceCorrect.current = (choice === question.answer) ? true : false
+            
             //Highlight correct choice in green
-            document.querySelector("#c-"+ans).classList.remove("neutral");
-            document.querySelector("#c-"+ans).classList.add("right");
+            document.querySelector("#c-"+question.answer).classList.remove("neutral");
+            document.querySelector("#c-"+question.answer).classList.add("right");
             
             //Highlight choice as red if wrong
-            if(choice !== ans){
+            if(choice !== question.answer && choice !== null){
                 document.querySelector("#c-"+choice).classList.remove("neutral");
                 document.querySelector("#c-"+choice).classList.add("wrong");
             }
@@ -58,30 +69,43 @@ function QuestionComponent ({questions, finishQuiz}) {
         }
     }
 
-    const handleNextQ = () => {            
+    function handleNextQ () {       
+        setPlayerAnswers([...playerAnswers, isChoiceCorrect.current]);
+
         if(questionsCompleted+1 === total) { //Finishes Quiz
             //Updates redux. Ends this component
-            finishQuiz({playerAnswers});
+            console.log("finish quiz")
+
         } else {
             //Updates state and resets choice containers
+            // setTimerValue(3)
+            setPauseTimer(false);
             setQuestion(questions[questionsCompleted+1])
             setQuestionsCompleted(questionsCompleted+1)
             restartChoices();
-            setHasPlayerChose(false);
+            timesUpElm.classList.add("hide");
+
+            hasPlayerChose = false;
         }
     }
+
+    if(playerAnswers.length === questionsCompleted+1) {
+       finishQuiz({playerAnswers});
+    }       
+
 
   return (
     <div className="question-holder">
         <div className="question-container">
-            <span className="q-amount">
-                Question: {questionsCompleted+1}/{total}
-            </span>
-            <br/>    
-            <br/>    
+            <span className="timesUp hide" ref={el => {timesUpElm = el}}>Times Up!</span>
+            <CountDownComponent timerValue={3} 
+                                size={.75} 
+                                start={true} 
+                                handleFinished={handleFinished}
+                                pause={pauseTimer}
+            />
+            <br/> <br/>    
             <span className="question">{question.question}</span>
-            <br/>
-            <br/>    
         </div>
 
         <div className="choice-container">
@@ -103,6 +127,11 @@ function QuestionComponent ({questions, finishQuiz}) {
             <b>Answer: </b>
             {question.choices[question.answer]}
         </div>
+
+        <span className="q-amount">
+            Question: {questionsCompleted+1}/{total}
+        </span>
+
     </div>
   );
 }

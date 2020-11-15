@@ -1,0 +1,46 @@
+.canvas{
+
+  /* height: 100%; */
+  /* margin: auto; */
+    margin-left: -70px;
+    margin-bottom: 70px;
+    font-family: 'Nixie One', cursive;
+}
+
+#animated_circle {
+    /* background-color: black; */
+    /* width: 20%; */
+}
+
+.time {
+    font-size: 140px;
+}
+
+button, input{
+    width: 300px;
+    height: 40px;
+    margin: auto;
+    display: block;
+    border: none;
+    font-size: 20px;
+    background: #FF4081;
+    color: white;
+}
+button{
+    width: 55px;
+    height: 55px;
+    border-radius: 100%;
+}
+svg{
+    margin: 50px auto;
+    overflow: visible;
+    display: block;
+    font-size: 60px;
+    line-height: 60px;
+}
+button svg{
+    margin: 0;
+}
+button:focus{
+    outline: none;
+}

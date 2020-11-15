@@ -1,7 +1,7 @@
 import QuizActionTypes from './quiz.types'
 
 const INITIAL_STATE = {
-
+    pause: false
 };
 
 const quizReducer = (state = INITIAL_STATE, action) => {
@@ -20,6 +20,12 @@ const quizReducer = (state = INITIAL_STATE, action) => {
             };
         case QuizActionTypes.NEW_QUIZ:
             return INITIAL_STATE;
+        case QuizActionTypes.PAUSE_TIMER: {
+            console.log("TEST")
+            return {
+                ...state,
+                pause: true
+            }}
         default:
             return state;
     }
