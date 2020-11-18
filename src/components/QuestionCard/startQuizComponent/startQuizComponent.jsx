@@ -79,6 +79,8 @@ function StartQuizComponent ({startQuiz}) {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          backgroundColor: 'rgba(0,0,0,.1)'
+
         },
         avatar: {
           margin: theme.spacing(1),

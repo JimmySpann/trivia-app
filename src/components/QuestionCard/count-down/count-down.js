@@ -1,7 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import './count-down.css';
 
-function CountDownComponent ({timerValue, handleFinished, size = 1, start = true, pause = false, color = "#FF4081"}) {  
+function CountDownComponent ({startValue, handleFinished, size = 1, start = true, pause = false, color = "#FF4081"}) {  
 	
 	
 	let arc, dot,
@@ -34,11 +34,12 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 							}
 					};
 
-					if (deg > 359){
-						deg = 359.9;
-						running = false;
-					}
+				//Keeps arc filled in
+				if (deg > 359){
+					deg = 359.9;
+				}
 					
+				//I'm not proud of this try-catch, but it makes it work
 				try{
 					arc.setAttribute('d', describeArc(100, 100, 100, 0, deg));
 					dot.setAttribute('cx', describeArc(100, 100, 100, 0, deg, true).x);
@@ -46,94 +47,60 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 				}
 				catch {}
 			},
-		startValue = timerValue,
 		desensS,
 		unitsS,
-		fullMinutes,
+		// fullMinutes,
 		carriedSeconds,
 		step,
 		arcCarrier = 0,
 		timeDivider = 1,
-		timeout = useRef(),
-		running = false;
+		timeout = useRef();
 		function setInputInTimer(value){
 			// fullMinutes = value / 60;
 			carriedSeconds = value //% 60;
 			try{
 				unitsS.innerHTML = carriedSeconds % 10;
 				desensS.innerHTML = Math.floor(carriedSeconds / 10);
-				}
-				catch{}
 				// unitsM.innerHTML = Math.floor(fullMinutes) % 10;
 				// desensM.innerHTML = Math.floor(Math.floor(fullMinutes) / 10);
+				}
+				catch{}
 			}
-			function timerStart(){
-				timeout.current = setTimeout(function(){
-					if(!pause) {
-					if(timeDivider % 100 === 0){
-						if(startValue > 0){
-							startValue--;
-							timeDivider++;
-							setInputInTimer(startValue);
-							timerStart();
-						}
-						// console.log(startValue)
-					}
-					else {
+		function timerStart(){
+			timeout.current = setTimeout(function(){
+				if(timeDivider % 100 === 0){
+					if(startValue > 0){
+						startValue--;
 						timeDivider++;
-						arcCarrier = arcCarrier + step; 
-						animatedCircle(arcCarrier);
+						setInputInTimer(startValue);
 						timerStart();
 					}
-					console.log(running,pause)
-					if(arcCarrier > 359.9) {
-						handleFinished();	
-					}
-				} else {
-					clearTimeout(timeout.current);
-					running = false;
+				}
+				else {
+					timeDivider++;
+					arcCarrier = arcCarrier + step; 
+					animatedCircle(arcCarrier);
+					timerStart();
+				}
+
+				if(arcCarrier > 359.9) {
+					handleFinished();	
 				}
 			}, 10);
 		}
-		function reSet(){
-			console.log("reset 1");
-			if(timeout !== 'undefined'){
-					console.log("reset 2");
-
-					clearTimeout(timeout);
-					arcCarrier = 0;
-				}
-				else{
-					return false;
-				}
-			};
-			
-			useEffect(() => {
-				let interval = null;
-				console.log("effect test", pause)
-				if (!pause) {
-					timerStart();
-				} else if (pause) {
-					console.log("test pause")
-					clearTimeout(timeout.current)
-					running = false;
-				}
-				return () => clearInterval(interval);
-			  }, [pause, timerStart, running]);
-
-		if(!pause) {
-			console.log("start check")
-			setTimeout(() => {
+		
+		//Handles starting and stopping timer
+		useEffect(() => {
+			if (!pause && start) {
 				setInputInTimer(startValue);
-				step = (360 / startValue) / 100;
-			}, 1);
-		}
-		if(start === true) {
-			if(!reSet()){
-			// timerStart();
-			running = true;
-		}
-	}
+				// eslint-disable-next-line react-hooks/exhaustive-deps
+				step = (360 / startValue) / 100; //It's okay. It works.
+				timerStart();
+			} else if (pause) {
+				clearTimeout(timeout.current)
+			}
+			return () => clearTimeout(timeout.current)
+		});
 	
     return (
 		<div className="timer-holder">

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 import { connect } from 'react-redux';
 import { finishQuiz } from '../../../redux/quiz/quiz.actions';
@@ -14,22 +14,11 @@ function QuestionComponent ({questions, finishQuiz}) {
     const [questionsCompleted, setQuestionsCompleted] = useState(0)
     const [playerAnswers, setPlayerAnswers] = useState([])
     const [pauseTimer, setPauseTimer] = useState(false);
-    // let pauseTimer = false
     const total = questions.length;
     
-    let isChoiceCorrect = useRef();
-    // let hasPlayerChose = false;
-
-    let timesUpElm = useRef();
-    let hasPlayerChose = useRef(false);
-
-
-    // setTimeout(() => {
-    //     // setPauseTimer(true)
-    //     // console.log("timersUp",timesUpElm)
-    //     setTest(3);
-    //     console.log("test",test)
-    // }, 1000);
+    const isChoiceCorrect = useRef();
+    const timesUpElm = useRef();
+    const hasPlayerChose = useRef(false);
   
     function handleFinished() {
         // console.log(hasPlayerChose, pauseTimer)
@@ -49,14 +38,10 @@ function QuestionComponent ({questions, finishQuiz}) {
     }
 
     function handleChoiceClick(choice) {
-        console.log("hasPlayerChose", hasPlayerChose.current)
-
         if(!hasPlayerChose.current) {
-            hasPlayerChose.current = true;
-            console.log("hasPlayerChose", hasPlayerChose.current)
 
-            setPauseTimer(pause => pause = true)
-            // pauseTimer = true;
+            hasPlayerChose.current = true;
+            setPauseTimer(true)
             
             //Decide if answer is right or wrong, then record
             isChoiceCorrect.current = (choice === question.answer) ? true : false
@@ -84,33 +69,32 @@ function QuestionComponent ({questions, finishQuiz}) {
     function handleNextQ () {       
         setPlayerAnswers([...playerAnswers, isChoiceCorrect.current]);
 
-        if(questionsCompleted+1 === total) { //Finishes Quiz
-            //Updates redux. Ends this component
-            console.log("finish quiz")
-
-        } else {
+        if(questionsCompleted+1 !== total) { //Finishes Quiz
             //Updates state and resets choice containers
-            // setTimerValue(3)
             setPauseTimer(false);
             setQuestion(questions[questionsCompleted+1])
             setQuestionsCompleted(questionsCompleted+1)
             restartChoices();
-            timesUpElm.current.classList.add("hide");
 
+            timesUpElm.current.classList.add("hide");
             hasPlayerChose.current = false;
         }
     }
 
-    if(playerAnswers.length === questionsCompleted+1) {
-       finishQuiz({playerAnswers});
-    }       
+    //Finishes quiz is all questions are completed
+    useEffect(() => {
+        if(playerAnswers.length === questionsCompleted+1) {
+            finishQuiz({playerAnswers}); 
+        }  
+    }, [questionsCompleted, finishQuiz, playerAnswers])
+     
 
 
   return (
     <div className="question-holder">
         <div className="question-container">
             <span className="timesUp hide" ref={timesUpElm}>Times Up!</span>
-            <CountDownComponent timerValue={3} 
+            <CountDownComponent startValue={15} 
                                 size={.75} 
                                 start={true} 
                                 handleFinished={handleFinished}
