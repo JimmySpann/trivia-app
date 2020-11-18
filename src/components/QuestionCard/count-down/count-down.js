@@ -1,7 +1,7 @@
 import React from 'react';
 import './count-down.css';
 
-function CountDownComponent ({timerValue, handleFinished, size = 1, start = true, pause, color = "#FF4081"}) {  
+function CountDownComponent ({timerValue, handleFinished, size = 1, start = true, pause = false, color = "#FF4081"}) {  
 	
 	let arc, dot,
 		angleInRadians,
@@ -38,14 +38,12 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 					running = false;
 				}
 
-				if(pause === false) {
-					try{
-					arc.setAttribute('d', describeArc(100, 100, 100, 0, deg));
-					dot.setAttribute('cx', describeArc(100, 100, 100, 0, deg, true).x);
-					dot.setAttribute('cy', describeArc(100, 100, 100, 0, deg, true).y);
-					}
-					catch {}
+				try{
+				arc.setAttribute('d', describeArc(100, 100, 100, 0, deg));
+				dot.setAttribute('cx', describeArc(100, 100, 100, 0, deg, true).x);
+				dot.setAttribute('cy', describeArc(100, 100, 100, 0, deg, true).y);
 				}
+				catch {}
 		},
 		startValue = timerValue,
 		desensS,
@@ -69,14 +67,14 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 				// desensM.innerHTML = Math.floor(Math.floor(fullMinutes) / 10);
 		}
 		function timerStart(){
-			if(!pause) {
-				timeout = setTimeout(function(){
+			timeout = setTimeout(function(){
+				if(!pause) {
 					if(timeDivider % 100 === 0){
 						if(startValue > 0){
 							startValue--;
 							timeDivider++;
 							setInputInTimer(startValue);
-							if(running === true) timerStart();
+							timerStart();
 						}
 						console.log(startValue)
 					}
@@ -84,14 +82,17 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 						timeDivider++;
 						arcCarrier = arcCarrier + step; 
 						animatedCircle(arcCarrier);
-						if(running === true) timerStart();
+						timerStart();
 					}
 					console.log(running,pause)
 					if(arcCarrier > 359.9) {
 						handleFinished();	
 					}
+				} else {
+					clearTimeout(timeout);
+					running = false;
+				}
 				}, 10);
-			}
 		}
 		function reSet(){
 				if(typeof timeout !== 'undefined'){
@@ -103,7 +104,9 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 				}
 		};
 
+
 	if(!pause) {
+		console.log("start check")
 		setTimeout(() => {
 			setInputInTimer(startValue);
 			step = (360 / startValue) / 100;
@@ -114,9 +117,6 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 			timerStart();
 			running = true;
 		}
-	}
-	if(pause === true) {
-		running = false
 	}
 
     return (

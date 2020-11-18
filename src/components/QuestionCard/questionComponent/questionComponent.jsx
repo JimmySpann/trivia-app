@@ -22,11 +22,13 @@ function QuestionComponent ({questions, finishQuiz}) {
     let timesUpElm;
 
     setTimeout(() => {
-        setPauseTimer(true)
+        // setPauseTimer(true)
+        // console.log("timersUp",timesUpElm)
     }, 1000);
   
     function handleFinished() {
-        timesUpElm.classList.remove("hide");
+        console.log(hasPlayerChose, pauseTimer)
+        // timesUpElm.classList.remove("hide");
         handleChoiceClick(null)
     } 
 
@@ -44,7 +46,10 @@ function QuestionComponent ({questions, finishQuiz}) {
     function handleChoiceClick(choice) {
         if(!hasPlayerChose) {
             hasPlayerChose = true;
-            setPauseTimer(true)
+            setPauseTimer(pause => pause = true)
+            setTimeout(() => {
+                console.log("ptime",pauseTimer)
+            }, 1000);
             
             //Decide if answer is right or wrong, then record
             isChoiceCorrect.current = (choice === question.answer) ? true : false
