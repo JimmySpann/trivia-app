@@ -1,7 +1,8 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import './count-down.css';
 
 function CountDownComponent ({timerValue, handleFinished, size = 1, start = true, pause = false, color = "#FF4081"}) {  
+	
 	
 	let arc, dot,
 		angleInRadians,
@@ -26,25 +27,25 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 							].join(" ");
 						if (!onlyM)
 							return d;
-						else
+							else
 							return {
 								'x': start.x,
 								'y': start.y
 							}
 					};
 
-				if (deg > 359){
-					deg = 359.9;
-					running = false;
-				}
-
+					if (deg > 359){
+						deg = 359.9;
+						running = false;
+					}
+					
 				try{
-				arc.setAttribute('d', describeArc(100, 100, 100, 0, deg));
-				dot.setAttribute('cx', describeArc(100, 100, 100, 0, deg, true).x);
-				dot.setAttribute('cy', describeArc(100, 100, 100, 0, deg, true).y);
+					arc.setAttribute('d', describeArc(100, 100, 100, 0, deg));
+					dot.setAttribute('cx', describeArc(100, 100, 100, 0, deg, true).x);
+					dot.setAttribute('cy', describeArc(100, 100, 100, 0, deg, true).y);
 				}
 				catch {}
-		},
+			},
 		startValue = timerValue,
 		desensS,
 		unitsS,
@@ -53,22 +54,22 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 		step,
 		arcCarrier = 0,
 		timeDivider = 1,
-		timeout,
+		timeout = useRef(),
 		running = false;
 		function setInputInTimer(value){
-				// fullMinutes = value / 60;
-				carriedSeconds = value //% 60;
-				try{
+			// fullMinutes = value / 60;
+			carriedSeconds = value //% 60;
+			try{
 				unitsS.innerHTML = carriedSeconds % 10;
 				desensS.innerHTML = Math.floor(carriedSeconds / 10);
 				}
 				catch{}
 				// unitsM.innerHTML = Math.floor(fullMinutes) % 10;
 				// desensM.innerHTML = Math.floor(Math.floor(fullMinutes) / 10);
-		}
-		function timerStart(){
-			timeout = setTimeout(function(){
-				if(!pause) {
+			}
+			function timerStart(){
+				timeout.current = setTimeout(function(){
+					if(!pause) {
 					if(timeDivider % 100 === 0){
 						if(startValue > 0){
 							startValue--;
@@ -76,7 +77,7 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 							setInputInTimer(startValue);
 							timerStart();
 						}
-						console.log(startValue)
+						// console.log(startValue)
 					}
 					else {
 						timeDivider++;
@@ -89,38 +90,53 @@ function CountDownComponent ({timerValue, handleFinished, size = 1, start = true
 						handleFinished();	
 					}
 				} else {
-					clearTimeout(timeout);
+					clearTimeout(timeout.current);
 					running = false;
 				}
-				}, 10);
+			}, 10);
 		}
 		function reSet(){
-				if(typeof timeout !== 'undefined'){
+			console.log("reset 1");
+			if(timeout !== 'undefined'){
+					console.log("reset 2");
+
 					clearTimeout(timeout);
 					arcCarrier = 0;
 				}
 				else{
 					return false;
 				}
-		};
+			};
+			
+			useEffect(() => {
+				let interval = null;
+				console.log("effect test", pause)
+				if (!pause) {
+					timerStart();
+				} else if (pause) {
+					console.log("test pause")
+					clearTimeout(timeout.current)
+					running = false;
+				}
+				return () => clearInterval(interval);
+			  }, [pause, timerStart, running]);
 
-
-	if(!pause) {
-		console.log("start check")
-		setTimeout(() => {
-			setInputInTimer(startValue);
-			step = (360 / startValue) / 100;
-		}, 1);
-	}
-	if(start === true) {
-		if(!reSet()){
-			timerStart();
+		if(!pause) {
+			console.log("start check")
+			setTimeout(() => {
+				setInputInTimer(startValue);
+				step = (360 / startValue) / 100;
+			}, 1);
+		}
+		if(start === true) {
+			if(!reSet()){
+			// timerStart();
 			running = true;
 		}
 	}
-
+	
     return (
-        <div className="timer-holder">
+		<div className="timer-holder">
            <link href='https://fonts.googleapis.com/css?family=Nixie+One' rel='stylesheet' type='text/css' />	
             <div className="canvas">
 				<svg id="animated_circle" width={100 * size} 

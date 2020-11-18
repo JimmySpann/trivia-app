@@ -14,21 +14,26 @@ function QuestionComponent ({questions, finishQuiz}) {
     const [questionsCompleted, setQuestionsCompleted] = useState(0)
     const [playerAnswers, setPlayerAnswers] = useState([])
     const [pauseTimer, setPauseTimer] = useState(false);
+    // let pauseTimer = false
     const total = questions.length;
     
     let isChoiceCorrect = useRef();
-    let hasPlayerChose = false;
+    // let hasPlayerChose = false;
 
-    let timesUpElm;
+    let timesUpElm = useRef();
+    let hasPlayerChose = useRef(false);
 
-    setTimeout(() => {
-        // setPauseTimer(true)
-        // console.log("timersUp",timesUpElm)
-    }, 1000);
+
+    // setTimeout(() => {
+    //     // setPauseTimer(true)
+    //     // console.log("timersUp",timesUpElm)
+    //     setTest(3);
+    //     console.log("test",test)
+    // }, 1000);
   
     function handleFinished() {
-        console.log(hasPlayerChose, pauseTimer)
-        // timesUpElm.classList.remove("hide");
+        // console.log(hasPlayerChose, pauseTimer)
+        timesUpElm.current.classList.remove("hide");
         handleChoiceClick(null)
     } 
 
@@ -44,12 +49,14 @@ function QuestionComponent ({questions, finishQuiz}) {
     }
 
     function handleChoiceClick(choice) {
-        if(!hasPlayerChose) {
-            hasPlayerChose = true;
+        console.log("hasPlayerChose", hasPlayerChose.current)
+
+        if(!hasPlayerChose.current) {
+            hasPlayerChose.current = true;
+            console.log("hasPlayerChose", hasPlayerChose.current)
+
             setPauseTimer(pause => pause = true)
-            setTimeout(() => {
-                console.log("ptime",pauseTimer)
-            }, 1000);
+            // pauseTimer = true;
             
             //Decide if answer is right or wrong, then record
             isChoiceCorrect.current = (choice === question.answer) ? true : false
@@ -88,9 +95,9 @@ function QuestionComponent ({questions, finishQuiz}) {
             setQuestion(questions[questionsCompleted+1])
             setQuestionsCompleted(questionsCompleted+1)
             restartChoices();
-            timesUpElm.classList.add("hide");
+            timesUpElm.current.classList.add("hide");
 
-            hasPlayerChose = false;
+            hasPlayerChose.current = false;
         }
     }
 
@@ -102,7 +109,7 @@ function QuestionComponent ({questions, finishQuiz}) {
   return (
     <div className="question-holder">
         <div className="question-container">
-            <span className="timesUp hide" ref={el => {timesUpElm = el}}>Times Up!</span>
+            <span className="timesUp hide" ref={timesUpElm}>Times Up!</span>
             <CountDownComponent timerValue={3} 
                                 size={.75} 
                                 start={true} 
