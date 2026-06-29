@@ -16,6 +16,7 @@ function QuestionComponent ({questions, finishQuiz}) {
     const [pauseTimer, setPauseTimer] = useState(false);
     const [showOverlay, setShowOverlay] = useState(false);
     const [overlayType, setOverlayType] = useState(''); // 'correct', 'wrong', 'timesup'
+    const [showQuitDialog, setShowQuitDialog] = useState(false);
     const total = questions.length;
 
     const isChoiceCorrect = useRef();
@@ -97,8 +98,16 @@ function QuestionComponent ({questions, finishQuiz}) {
     }
 
     function handleQuit() {
+        setShowQuitDialog(true);
+    }
+
+    function confirmQuit() {
         setPlayerAnswers([...playerAnswers, isChoiceCorrect.current]);
         finishQuiz({playerAnswers});
+    }
+
+    function cancelQuit() {
+        setShowQuitDialog(false);
     }
 
     //Finishes quiz is all questions are completed
@@ -177,6 +186,23 @@ function QuestionComponent ({questions, finishQuiz}) {
                                 Finish
                             </button>
                         )}
+                    </div>
+                </div>
+            </div>
+        )}
+
+        {showQuitDialog && (
+            <div className="dialog-overlay">
+                <div className="dialog-content">
+                    <h2 className="dialog-title">Quit Quiz?</h2>
+                    <p className="dialog-message">Are you sure you want to quit? Your progress will be saved.</p>
+                    <div className="dialog-buttons">
+                        <button className="dialog-button cancel" onClick={cancelQuit}>
+                            Cancel
+                        </button>
+                        <button className="dialog-button confirm" onClick={confirmQuit}>
+                            Confirm
+                        </button>
                     </div>
                 </div>
             </div>
