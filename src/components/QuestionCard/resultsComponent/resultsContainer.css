@@ -68,10 +68,12 @@
 .answer-display {
     font-size: clamp(14px, 2vw, 16px);
     margin-bottom: 5px;
+    color: white;
 }
 
 .answer-label {
     font-weight: bold;
+    color: white;
 }
 
 .answer-correct {
@@ -87,10 +89,10 @@
 }
 
 .restart-button {
-    padding: 16px 50px;
+    padding: 20px 60px;
     border-radius: 15px;
     background-color: orange;
-    color: white;
+    color: black;
     font-size: clamp(18px, 3vw, 24px);
     font-weight: bold;
     cursor: pointer;
