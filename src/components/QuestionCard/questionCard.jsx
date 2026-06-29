@@ -11,14 +11,14 @@ import { selectQuizData } from '../../redux/quiz/quiz.selectors'
 import './questionCard.css';
 
 function QuestionContainer({quizData}) {
-    const {quizStatus, questions, playerAnswers} = quizData;
+    const {quizStatus, questions, playerAnswers, playerChoices, timeUpStatus} = quizData;
 
     return (
         <div>
             {/* Neat way of conditionally switching components */}
             {!quizStatus && <StartQuizComponent /> }
             {quizStatus === "started" && <QuestionComponent questions={questions} /> }
-            {quizStatus === "finished" && <ResultsComponent questions={questions} playerAnswers={playerAnswers} /> }
+            {quizStatus === "finished" && <ResultsComponent questions={questions} playerAnswers={playerAnswers} playerChoices={playerChoices} timeUpStatus={timeUpStatus} /> }
         </div>
     );
 }
