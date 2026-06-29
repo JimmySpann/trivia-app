@@ -159,12 +159,15 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.4);
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     z-index: 1000;
     animation: fadeIn 0.3s ease-in;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
 @keyframes fadeIn {
@@ -174,14 +177,6 @@
     to {
         opacity: 1;
     }
-}
-
-.overlay-content {
-    background-color: rgba(0, 0, 0, 0.3);
-    padding: 40px;
-    border-radius: 20px;
-    text-align: center;
-    max-width: 90vw;
 }
 
 .overlay-title {
@@ -201,16 +196,30 @@
     gap: 20px;
     justify-content: center;
     flex-wrap: wrap;
+    width: 100%;
+    max-width: 500px;
 }
 
 .overlay-button {
-    padding: 12px 30px;
+    padding: 16px 40px;
     border-radius: 15px;
-    font-size: clamp(14px, 2vw, 16px);
+    font-size: clamp(16px, 3vw, 20px);
     font-weight: bold;
     cursor: pointer;
     border: none;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
+    flex: 1;
+    min-width: 140px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.overlay-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.4);
+}
+
+.overlay-button:active {
+    transform: translateY(0);
 }
 
 .overlay-button.next {
@@ -219,7 +228,7 @@
 }
 
 .overlay-button.next:hover {
-    background-color: rgb(182, 118, 0);
+    background-color: rgb(200, 130, 0);
 }
 
 .overlay-button.quit {
@@ -237,5 +246,19 @@
 }
 
 .overlay-button.finish:hover {
-    background-color: rgb(182, 118, 0);
+    background-color: rgb(200, 130, 0);
+}
+
+@media (max-width: 600px) {
+    .overlay-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .overlay-button {
+        width: 100%;
+        max-width: 280px;
+        padding: 18px 30px;
+    }
 }

@@ -152,32 +152,30 @@ function QuestionComponent ({questions, finishQuiz}) {
 
         {showOverlay && (
             <div className="overlay">
-                <div className="overlay-content">
-                    <h2 className="overlay-title">
-                        {overlayType === 'correct' && 'Correct!'}
-                        {overlayType === 'wrong' && 'Wrong!'}
-                        {overlayType === 'timesup' && "Time's Up!"}
-                    </h2>
-                    <p className="overlay-answer">
-                        <b>Answer: </b>
-                        {question.choices[question.answer]}
-                    </p>
-                    <div className="overlay-buttons">
-                        {questionsCompleted+1 < total ? (
-                            <>
-                                <button className="overlay-button next" onClick={handleNextQ}>
-                                    Next
-                                </button>
-                                <button className="overlay-button quit" onClick={handleQuit}>
-                                    Quit
-                                </button>
-                            </>
-                        ) : (
-                            <button className="overlay-button finish" onClick={handleNextQ}>
-                                Finish
+                <h2 className="overlay-title">
+                    {overlayType === 'correct' && 'Correct!'}
+                    {overlayType === 'wrong' && 'Wrong!'}
+                    {overlayType === 'timesup' && "Time's Up!"}
+                </h2>
+                <p className="overlay-answer">
+                    <b>Answer: </b>
+                    {question.choices[question.answer]}
+                </p>
+                <div className="overlay-buttons">
+                    {questionsCompleted+1 < total ? (
+                        <>
+                            <button className="overlay-button next" onClick={handleNextQ}>
+                                Next
                             </button>
-                        )}
-                    </div>
+                            <button className="overlay-button quit" onClick={handleQuit}>
+                                Quit
+                            </button>
+                        </>
+                    ) : (
+                        <button className="overlay-button finish" onClick={handleNextQ}>
+                            Finish
+                        </button>
+                    )}
                 </div>
             </div>
         )}
