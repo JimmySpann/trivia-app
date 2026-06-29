@@ -5,7 +5,7 @@ import { newQuiz } from '../../../redux/quiz/quiz.actions';
 
 import './resultsContainer.css';
 
-function ResultsComponent ({questions, playerAnswers, newQuiz}) {
+function ResultsComponent ({questions, playerAnswers, playerChoices, timeUpStatus, newQuiz}) {
 
     const total = questions.length;
     //Counts total of true answers the player has made
@@ -27,30 +27,44 @@ function ResultsComponent ({questions, playerAnswers, newQuiz}) {
         </div>
 
         <div className="results-container">
-            {questions.map((question, index) => (
-                <div key={index} className={`question-card ${playerAnswers[index] ? 'correct' : 'wrong'}`}>
-                    <div className="question-number">
-                        Question {index + 1}
-                    </div>
-                    <div className="question-text">
-                        {question.question}
-                    </div>
-                    <div className="answer-display">
-                        <span className="answer-label">Your answer: </span>
-                        <span className={playerAnswers[index] ? 'answer-correct' : 'answer-wrong'}>
-                            {question.choices[question.answer]}
-                        </span>
-                    </div>
-                    {!playerAnswers[index] && (
-                        <div className="answer-display">
-                            <span className="answer-label">Correct answer: </span>
-                            <span className="answer-correct">
-                                {question.choices[question.answer]}
-                            </span>
+            {questions.map((question, index) => {
+                const isCorrect = playerAnswers[index];
+                const playerChoice = playerChoices && playerChoices[index] !== undefined ? playerChoices[index] : null;
+                const isTimeUp = timeUpStatus && timeUpStatus[index] !== undefined ? timeUpStatus[index] : false;
+                const playerAnswerText = playerChoice !== null ? question.choices[playerChoice] : 'No answer';
+
+                return (
+                    <div key={index} className={`question-card ${isCorrect ? 'correct' : 'wrong'}`}>
+                        <div className="question-number">
+                            Question {index + 1}
                         </div>
-                    )}
-                </div>
-            ))}
+                        <div className="question-text">
+                            {question.question}
+                        </div>
+                        {isTimeUp ? (
+                            <div className="answer-display">
+                                <span className="answer-label">Status: </span>
+                                <span className="answer-wrong">Time's Up!</span>
+                            </div>
+                        ) : (
+                            <div className="answer-display">
+                                <span className="answer-label">You chose: </span>
+                                <span className={isCorrect ? 'answer-correct' : 'answer-wrong'}>
+                                    {playerAnswerText}
+                                </span>
+                            </div>
+                        )}
+                        {!isCorrect && (
+                            <div className="answer-display">
+                                <span className="answer-label">Correct answer: </span>
+                                <span className="answer-correct">
+                                    {question.choices[question.answer]}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                );
+            })}
         </div>
 
         <div className="restart-container">

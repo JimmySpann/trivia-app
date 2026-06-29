@@ -16,6 +16,8 @@ const quizReducer = (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 playerAnswers: action.payload.playerAnswers,
+                playerChoices: action.payload.playerChoices || [],
+                timeUpStatus: action.payload.timeUpStatus || [],
                 quizStatus: 'finished'
             };
         case QuizActionTypes.NEW_QUIZ:

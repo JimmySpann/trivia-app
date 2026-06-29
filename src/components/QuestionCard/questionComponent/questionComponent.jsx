@@ -13,6 +13,8 @@ function QuestionComponent ({questions, finishQuiz}) {
     const [question, setQuestion] = useState(questions[0])
     const [questionsCompleted, setQuestionsCompleted] = useState(0)
     const [playerAnswers, setPlayerAnswers] = useState([])
+    const [playerChoices, setPlayerChoices] = useState([])
+    const [timeUpStatus, setTimeUpStatus] = useState([])
     const [pauseTimer, setPauseTimer] = useState(false);
     const [showOverlay, setShowOverlay] = useState(false);
     const [overlayType, setOverlayType] = useState(''); // 'correct', 'wrong', 'timesup'
@@ -21,6 +23,7 @@ function QuestionComponent ({questions, finishQuiz}) {
 
     const isChoiceCorrect = useRef();
     const hasPlayerChose = useRef(false);
+    const currentChoice = useRef(null);
   
     function handleFinished() {
         setOverlayType('timesup');
@@ -44,6 +47,7 @@ function QuestionComponent ({questions, finishQuiz}) {
         if(!hasPlayerChose.current) {
 
             hasPlayerChose.current = true;
+            currentChoice.current = choice;
             setPauseTimer(true)
 
             //Decide if answer is right or wrong, then record
@@ -81,6 +85,8 @@ function QuestionComponent ({questions, finishQuiz}) {
 
     function handleNextQ () {
         setPlayerAnswers([...playerAnswers, isChoiceCorrect.current]);
+        setPlayerChoices([...playerChoices, currentChoice.current]);
+        setTimeUpStatus([...timeUpStatus, overlayType === 'timesup']);
         setShowOverlay(false);
 
         if(questionsCompleted+1 !== total) { //Finishes Quiz
@@ -98,7 +104,9 @@ function QuestionComponent ({questions, finishQuiz}) {
 
     function confirmQuit() {
         setPlayerAnswers([...playerAnswers, isChoiceCorrect.current]);
-        finishQuiz({playerAnswers});
+        setPlayerChoices([...playerChoices, currentChoice.current]);
+        setTimeUpStatus([...timeUpStatus, overlayType === 'timesup']);
+        finishQuiz({playerAnswers, playerChoices, timeUpStatus});
     }
 
     function cancelQuit() {
@@ -108,9 +116,9 @@ function QuestionComponent ({questions, finishQuiz}) {
     //Finishes quiz is all questions are completed
     useEffect(() => {
         if(playerAnswers.length === questionsCompleted+1) {
-            finishQuiz({playerAnswers}); 
-        }  
-    }, [questionsCompleted, finishQuiz, playerAnswers])
+            finishQuiz({playerAnswers, playerChoices, timeUpStatus});
+        }
+    }, [questionsCompleted, finishQuiz, playerAnswers, playerChoices, timeUpStatus])
      
 
 
