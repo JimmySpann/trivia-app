@@ -38,7 +38,6 @@ function QuestionComponent ({questions, finishQuiz}) {
             document.querySelector("#c-"+i).classList.remove("wrong");
             document.querySelector("#c-"+i).classList.remove("right");
             document.querySelector("#c-"+i).classList.add("neutral");
-            document.querySelector(".answer-container").classList.add("hide");
         }
         hasPlayerChose.current = false;
     }
@@ -71,14 +70,6 @@ function QuestionComponent ({questions, finishQuiz}) {
             if(choice !== question.answer && choice !== null){
                 document.querySelector("#c-"+choice).classList.remove("neutral");
                 document.querySelector("#c-"+choice).classList.add("wrong");
-            }
-
-            //Show answer text and Next Button
-            document.querySelector(".answer-container").classList.remove("hide");
-
-            //Change Next button to Finished button
-            if(questionsCompleted+1 === total) {
-                document.querySelector(".next-button").innerHTML = "Finished";
             }
         }
     }
@@ -151,14 +142,6 @@ function QuestionComponent ({questions, finishQuiz}) {
                 </div>
             ))}
             <br/>
-        </div>
-
-        <div className="answer-container hide">
-            <button className="next-button" onClick={handleNextQ}>
-                Next
-            </button>
-            <b>Answer: </b>
-            {question.choices[question.answer]}
         </div>
 
         {showOverlay && (
