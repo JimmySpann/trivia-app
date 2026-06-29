@@ -24,6 +24,7 @@ function StartQuizComponent ({startQuiz}) {
     const entities = new AllHtmlEntities();
     const [isLoading, setIsLoading] = useState(false);
     const [abortController, setAbortController] = useState(null);
+    const [error, setError] = useState(null);
     let difficulty = 0, category = 0;
 
     /* Randomize array in-place using Durstenfeld shuffle algorithm */
@@ -76,6 +77,7 @@ function StartQuizComponent ({startQuiz}) {
             .catch(error => {
                 if (error.name !== 'AbortError') {
                     console.error('Error fetching questions:', error);
+                    setError('Failed to load quiz. Please check your connection and try again.');
                 }
                 setIsLoading(false);
             });
@@ -87,6 +89,10 @@ function StartQuizComponent ({startQuiz}) {
             abortController.abort();
         }
         setIsLoading(false);
+    }
+
+    function handleDismissError() {
+        setError(null);
     }
 
     const useStyles = makeStyles(() => ({
@@ -225,6 +231,18 @@ function StartQuizComponent ({startQuiz}) {
                 <h2 className="loading-title">Loading Quiz...</h2>
                 <button className="loading-cancel-button" onClick={handleCancel}>
                   Cancel
+                </button>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="error-overlay">
+              <div className="error-content">
+                <h2 className="error-title">Error</h2>
+                <p className="error-message">{error}</p>
+                <button className="error-dismiss-button" onClick={handleDismissError}>
+                  OK
                 </button>
               </div>
             </div>
