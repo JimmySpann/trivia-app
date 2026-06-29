@@ -6,3 +6,8 @@
     align-items: center;
 }
 
+/* Fix dropdown arrow positioning */
+.MuiSelect-icon {
+    top: calc(50% - 8px);
+}
+

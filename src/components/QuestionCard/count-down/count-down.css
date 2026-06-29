@@ -4,13 +4,10 @@
   /* margin: auto; */
     margin-left: -70px;
     margin-bottom: 70px;
+    margin-top: -40px;
     font-family: 'Nixie One', cursive;
 }
 
-#animated_circle {
-    /* background-color: black; */
-    /* width: 20%; */
-}
 
 .time {
     font-size: 140px;
