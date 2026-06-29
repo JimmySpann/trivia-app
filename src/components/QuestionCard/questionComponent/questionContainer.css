@@ -16,13 +16,6 @@
     max-width: 90vw;
 }
 
-.timesUp {
-    position: absolute;
-    margin-top: 150px;
-    margin-left: -125px;
-    font-size: 60px;
-}
-
 .question-backdrop {
     background-color: rgba(0, 0, 0, 0.3);
     padding: clamp(10px, 2vw, 20px) clamp(15px, 3vw, 30px);

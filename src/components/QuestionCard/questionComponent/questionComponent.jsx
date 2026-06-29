@@ -20,12 +20,9 @@ function QuestionComponent ({questions, finishQuiz}) {
     const total = questions.length;
 
     const isChoiceCorrect = useRef();
-    const timesUpElm = useRef();
     const hasPlayerChose = useRef(false);
   
     function handleFinished() {
-        // console.log(hasPlayerChose, pauseTimer)
-        timesUpElm.current.classList.remove("hide");
         setOverlayType('timesup');
         setShowOverlay(true);
         handleChoiceClick(null)
@@ -40,6 +37,7 @@ function QuestionComponent ({questions, finishQuiz}) {
             document.querySelector("#c-"+i).classList.add("neutral");
             document.querySelector(".answer-container").classList.add("hide");
         }
+        hasPlayerChose.current = false;
     }
 
     function handleChoiceClick(choice) {
@@ -91,9 +89,6 @@ function QuestionComponent ({questions, finishQuiz}) {
             setQuestion(questions[questionsCompleted+1])
             setQuestionsCompleted(questionsCompleted+1)
             restartChoices();
-
-            timesUpElm.current.classList.add("hide");
-            hasPlayerChose.current = false;
         }
     }
 
@@ -122,7 +117,6 @@ function QuestionComponent ({questions, finishQuiz}) {
   return (
     <div className="question-holder">
         <div className="question-container">
-            <span className="timesUp hide" ref={timesUpElm}>Times Up!</span>
             <span className="q-amount">
                 Question: {questionsCompleted+1}/{total}
             </span>
