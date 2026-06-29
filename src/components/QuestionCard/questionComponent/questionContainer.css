@@ -151,3 +151,91 @@
         transform-origin: top center;
     }
 }
+
+/* Overlay styles */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.overlay-content {
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 40px;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 90vw;
+}
+
+.overlay-title {
+    font-size: clamp(24px, 4vw, 36px);
+    color: orange;
+    margin-bottom: 20px;
+}
+
+.overlay-answer {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: white;
+    margin-bottom: 30px;
+}
+
+.overlay-buttons {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.overlay-button {
+    padding: 12px 30px;
+    border-radius: 15px;
+    font-size: clamp(14px, 2vw, 16px);
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s;
+}
+
+.overlay-button.next {
+    background-color: orange;
+    color: white;
+}
+
+.overlay-button.next:hover {
+    background-color: rgb(182, 118, 0);
+}
+
+.overlay-button.quit {
+    background-color: #666;
+    color: white;
+}
+
+.overlay-button.quit:hover {
+    background-color: #555;
+}
+
+.overlay-button.finish {
+    background-color: orange;
+    color: white;
+}
+
+.overlay-button.finish:hover {
+    background-color: rgb(182, 118, 0);
+}
