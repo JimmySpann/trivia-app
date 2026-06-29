@@ -84,12 +84,8 @@
     color: #dc3545;
 }
 
-.restart-container {
-    margin-top: 20px;
-}
-
 .restart-button {
-    padding: 20px 60px;
+    width: 100px;
     border-radius: 15px;
     background-color: orange;
     color: black;
