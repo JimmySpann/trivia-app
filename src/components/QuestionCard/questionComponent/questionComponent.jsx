@@ -94,14 +94,20 @@ function QuestionComponent ({questions, finishQuiz}) {
     <div className="question-holder">
         <div className="question-container">
             <span className="timesUp hide" ref={timesUpElm}>Times Up!</span>
+            <span className="q-amount">
+                Question: {questionsCompleted+1}/{total}
+            </span>
+            <br/> <br/>
             <CountDownComponent startValue={15} 
                                 size={.75} 
                                 start={true} 
                                 handleFinished={handleFinished}
                                 pause={pauseTimer}
             />
-            <br/> <br/>    
-            <span className="question">{question.question}</span>
+            <br/> <br/>
+            <div className="question-backdrop">
+                <span className="question">{question.question}</span>
+            </div>
         </div>
 
         <div className="choice-container">
@@ -123,10 +129,6 @@ function QuestionComponent ({questions, finishQuiz}) {
             <b>Answer: </b>
             {question.choices[question.answer]}
         </div>
-
-        <span className="q-amount">
-            Question: {questionsCompleted+1}/{total}
-        </span>
 
     </div>
   );
