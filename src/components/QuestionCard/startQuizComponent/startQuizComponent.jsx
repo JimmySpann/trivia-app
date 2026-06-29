@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {connect} from 'react-redux';
 import {AllHtmlEntities} from 'html-entities'
 import { theme } from '../../../theme';
@@ -20,9 +20,10 @@ import { startQuiz } from '../../../redux/quiz/quiz.actions';
 
 import './startQuizContainer.css';
 
-function StartQuizComponent ({startQuiz}) {   
+function StartQuizComponent ({startQuiz}) {
     const entities = new AllHtmlEntities();
-    let isStartPressed = false
+    const [isLoading, setIsLoading] = useState(false);
+    const [abortController, setAbortController] = useState(null);
     let difficulty = 0, category = 0;
 
     /* Randomize array in-place using Durstenfeld shuffle algorithm */
@@ -34,8 +35,10 @@ function StartQuizComponent ({startQuiz}) {
     }
 
     function handleStartQuiz() {
-        if(!isStartPressed){
-            isStartPressed = true;
+        if(!isLoading){
+            setIsLoading(true);
+            const controller = new AbortController();
+            setAbortController(controller);
 
             //Sets form fields to values
             let amount = document.querySelector('#numOfQuestions').value;
@@ -48,7 +51,7 @@ function StartQuizComponent ({startQuiz}) {
             url += `&type=multiple`;
 
             //Retrieves question data, updates state, then starts QuestionComponent
-            fetch(url)
+            fetch(url, { signal: controller.signal })
             .then(response => response.json())
             .then(data => {
                 //Restructures data to work in quiz game
@@ -67,9 +70,23 @@ function StartQuizComponent ({startQuiz}) {
                     question.answer = question.choices.indexOf(entities.decode(result.correct_answer))
                     questions.push(question);
                 }
+                setIsLoading(false);
                 startQuiz(questions);
+            })
+            .catch(error => {
+                if (error.name !== 'AbortError') {
+                    console.error('Error fetching questions:', error);
+                }
+                setIsLoading(false);
             });
         }
+    }
+
+    function handleCancel() {
+        if (abortController) {
+            abortController.abort();
+        }
+        setIsLoading(false);
     }
 
     const useStyles = makeStyles(() => ({
@@ -201,6 +218,17 @@ function StartQuizComponent ({startQuiz}) {
               </form>
             </div>
           </Container>
+
+          {isLoading && (
+            <div className="loading-overlay">
+              <div className="loading-content">
+                <h2 className="loading-title">Loading Quiz...</h2>
+                <button className="loading-cancel-button" onClick={handleCancel}>
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
         </div>
     );
 }
